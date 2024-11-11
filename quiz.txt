@@ -1,0 +1,81 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class ColorPredictionQuiz:
+    def __init__(self, master):
+        self.master = master
+        self.master.title(" Prediction Quiz")
+        self.master.geometry("400x300")
+
+        # Questions and answers
+        self.questions = [
+            "What color is the sky on a clear day?",
+            "What color is the sun?",
+            "What color is grass?",
+            "What color are strawberries?",
+            "What color is a banana?"
+        ]
+
+        self.answers = [
+            ("Blue", "Red"),  # Correct answer: Blue
+            ("Yellow", "Green"),  # Correct answer: Yellow
+            ("Green", "Purple"),  # Correct answer: Green
+            ("Red", "Green"),  # Correct answer: Red
+            ("Yellow", "Orange")  # Correct answer: Yellow
+        ]
+
+        self.score = 0
+        self.current_question = 0
+
+        self.question_label = tk.Label(master, text=self.questions[self.current_question], font=('Arial', 14))
+        self.question_label.pack(pady=20)
+
+        # Answer Buttons
+        self.answer_button1 = tk.Button(master, text=self.answers[self.current_question][0], width=20, command=lambda: self.check_answer(self.answers[self.current_question][0]))
+        self.answer_button1.pack(pady=5)
+
+        self.answer_button2 = tk.Button(master, text=self.answers[self.current_question][1], width=20, command=lambda: self.check_answer(self.answers[self.current_question][1]))
+        self.answer_button2.pack(pady=5)
+
+        # Replay Button (hidden initially)
+        self.replay_button = tk.Button(master, text="Replay", command=self.replay, state=tk.DISABLED)
+        self.replay_button.pack(pady=20)
+
+    def check_answer(self, answer):
+        correct_answer = self.answers[self.current_question][0]
+        if answer == correct_answer:
+            self.score += 1
+
+        # Move to next question or show the result
+        self.current_question += 1
+        if self.current_question < len(self.questions):
+            self.update_question()
+        else:
+            self.show_score()
+
+    def update_question(self):
+        # Update the question and answers
+        self.question_label.config(text=self.questions[self.current_question])
+        self.answer_button1.config(text=self.answers[self.current_question][0], command=lambda: self.check_answer(self.answers[self.current_question][0]))
+        self.answer_button2.config(text=self.answers[self.current_question][1], command=lambda: self.check_answer(self.answers[self.current_question][1]))
+
+    def show_score(self):
+        # Disable answer buttons and show score
+        self.answer_button1.config(state=tk.DISABLED)
+        self.answer_button2.config(state=tk.DISABLED)
+        messagebox.showinfo("Quiz Over", f"Your score is {self.score} out of 5!")
+        self.replay_button.config(state=tk.NORMAL)
+
+    def replay(self):
+        # Reset score and question
+        self.score = 0
+        self.current_question = 0
+        self.update_question()
+        self.answer_button1.config(state=tk.NORMAL)
+        self.answer_button2.config(state=tk.NORMAL)
+        self.replay_button.config(state=tk.DISABLED)
+
+# Create the main window
+root = tk.Tk()
+ColorPredictionQuiz(root)
+root.mainloop()
